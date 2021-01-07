@@ -25,14 +25,13 @@ export default {
     margin: 0 0;
   }
 
-  html {
+  /*html {
     overflow-y: scroll;
     font-size: 16px;
-    /*overflow: hidden;*/
   }
 
   body {
       width: 100%;
       overflow: hidden;
-  }
+  }*/
 </style>

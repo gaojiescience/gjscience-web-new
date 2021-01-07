@@ -27,8 +27,15 @@ new Vue({
   template: '<App/>'
 });
 
-// router.beforeEach((to,from,next) => {
-//   if(to.meta.title){
-//     document.title = to.meta.title
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  if (to.path == '/login' && from.path != '/register') {
+    //保存当前路由
+    localStorage.setItem("preRoute", router.currentRoute.fullPath)
+  }
+
+  if (to.path == '/register') {
+    //保存当前路由
+    localStorage.setItem("preRoute", router.currentRoute.fullPath)
+  }
+  next()
+})

@@ -2,18 +2,26 @@
   <div class="top-holder">
       <div class="top-content">
       <!--<div class="content-left">-->
-        <div class="icon-box">
+        <a class="icon-box" href="/#/market">
             <img src="../assets/logo.png" class="icon-img">
-        </div>
+        </a>
         <div class="btn-box">
-          <div class="information-btn btn">
-            资讯
+          <div class="information-btn btn" v-on:click="jumpToCommunity()">
+            社区
           </div>
           <div class="discussion-btn btn">
             论坛
           </div>
         </div>
         <SearchAssociation></SearchAssociation>
+        <div class="btn-box">
+          <div class="download-btn btn" v-on:click="downloadApp">
+            扫码下载App
+          </div>
+          <div class="download-block" v-if="isShowDownload">
+            <img src="../assets/download.png">
+          </div>
+        </div>
         <div class="btn-box" v-if="isLogin !== '1'">
           <div class="information-btn btn" v-on:click="jump('login')">
             登录
@@ -22,13 +30,21 @@
             注册
           </div>
         </div>
-        <div class="btn-box" v-else>
+        <div class="btn-box" v-else v-on:click="clickInformation">
           <div class="information-btn avatar">
-            <img :src="userAvatar">
+            <img src="../assets/default_avatar.jpg">
             <!--<img src="../assets/default_avatar.jpg">-->
           </div>
-          <div class="information-btn btn">
+          <div class="information-btn btn" id="information">
             {{ userNick }}
+          </div>
+          <div class="information-block" v-if="isClickInformation">
+            <div class="information-box" v-on:click="jumpToUserProfile">
+              个人中心
+            </div>
+            <div class="information-box" v-on:click="logOut">
+              退出登录
+            </div>
           </div>
         </div>
 
@@ -39,6 +55,7 @@
 
 <script>
 import SearchAssociation from "./SearchAssociation.vue"
+import Qr from 'vue-qr'
 export default {
   name: 'TopNavbar',
   components: {
@@ -50,23 +67,57 @@ export default {
       token: "",
       userCode: "",
 //      userName: "",
-      userNick: ""
+      userNick: "",
+      isClickInformation: false,
+      userAvatar: "",
+      isShowDownload: false
     }
   },
   methods: {
+    logOut: function () {
+      this.$cookie.delete("isLogin");
+      this.$cookie.delete("token");
+      this.$cookie.delete("userCode");
+      this.$cookie.delete("userAvatar");
+      this.$cookie.delete("userNick");
+      window.console.log(this.$cookie.get("isLogin"))
+      location.reload();
+    },
+    downloadApp: function () {
+      this.isShowDownload = !this.isShowDownload;
+      // window.open("/media/test.zip")
+    },
+    clickInformation: function (event) {
+      this.isClickInformation = !this.isClickInformation
+      // if (event.target.id === "information") {
+      //   this.isClickInformation = true
+      // }
+      // else {
+      //   this.isClickInformation = false
+      // }
+    },
     jump: function (type) {
       let newPage;
-      if (type == "register") {
+      if (type === "register") {
         newPage = this.$router.resolve({
           name: "Register",
         });
       }
-      else {
+      else if (type ==="login") {
         newPage = this.$router.resolve({
           name: "Login",
         });
       }
       window.open(newPage.href,'_self')
+    },
+    jumpToCommunity: function () {
+      window.open('http://58.250.250.99:8000/#/community','_blank')
+    },
+    jumpToUserProfile: function () {
+      const newPage = this.$router.resolve({
+        name: "UserProfile",
+      })
+      window.open(newPage.href,'_blank')
     },
     getLoginStatus: function () {
       this.isLogin = this.$cookie.get("isLogin");
@@ -77,7 +128,7 @@ export default {
 //      if (this.isLogin === "1") {
 //        this.getUserProfile(this)
 //      }
-      window.console.log(this.userAvatar)
+//      window.console.log(this.userAvatar)
     },
 //    getUserProfile: function (this_) {
 ////      window.console.log(this_.isLogin);
@@ -90,6 +141,11 @@ export default {
   },
   mounted() {
     this.getLoginStatus();
+    document.addEventListener('click', (e)=> {
+      if (e.target.id != 'information') {
+        this.isClickInformation= false;
+      }
+    })
 //    window.console.log(this.isLogin);
   }
 }
@@ -113,7 +169,7 @@ export default {
 
   .top-content {
     min-width: 1200px;
-    width: 60vw;
+    width: 1200px;
     /*background-color: yellow;*/
     display: flex;
     display: -webkit-flex;
@@ -145,9 +201,9 @@ export default {
   }
 
   .btn-box {
-    min-width: 300px;
+    /*min-width: 300px;*/
     height: 30px;
-    width: 300px;
+    /*width: 300px;*/
     display: flex;
     display: -webkit-flex;
     justify-content: flex-end;
@@ -183,4 +239,61 @@ export default {
     border-radius: 5px;
     margin-top: -5%;
   }
+
+  .information-block {
+    width: 150px;
+    height: 96px;
+    background-color: white;
+    border-radius: 3px;
+    top: 70px;
+    position: absolute;
+    box-shadow: 1px 1px 4px rgba(120, 120, 120, 0.9);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .information-box {
+    width: 100%;
+    height: 46px;
+    /*background-color: red;*/
+    line-height: 46px;
+    cursor: pointer;
+    border-bottom: 1px solid #F6F6F6;
+  }
+
+  .information-box:hover {
+    background-color: #F6F6F6;
+  }
+
+  .download-btn {
+    background-color: #0084ff;
+    color: white;
+    border-radius: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 95%;
+  }
+
+  .download-block {
+    width: 120px;
+    height: 120px;
+    position: absolute;
+    background-color: white;
+    box-shadow: 2px 2px 5px rgba(120, 120, 120, 0.9);
+    top: 60px;
+    /*left: 25px;*/
+    border-radius: 5px;
+  }
+
+  .download-block img {
+    width: 90%;
+    height: 90%;
+    margin-top: 5%;
+    margin-left: 2%;
+  }
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/TopNavbar.vue

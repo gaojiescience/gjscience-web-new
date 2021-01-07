@@ -689,8 +689,10 @@ export default {
         display: flex;
         display: -webkit-flex;
         flex-direction: column;
-        overflow: hidden;
+        /*overflow: hidden;*/
         background-image: url("../assets/index.jpg");
+        margin-top: -6vh;
+
     }
 
     .top-holder {
@@ -700,7 +702,8 @@ export default {
         display: -webkit-flex;
         justify-content: center;
         /*border-bottom: 1px solid #f7f7fa;*/
-
+        position: absolute;
+        /*top: -6vh;*/
         /*background-color: red;*/
     }
 
@@ -797,7 +800,7 @@ export default {
         display: flex;
         display: -webkit-flex;
         justify-content: center;
-
+        position: absolute;
         /*background-color: green;*/
     }
 
@@ -812,6 +815,7 @@ export default {
         /*justify-content: center;*/
         align-items: center;
         flex-direction: column;
+
     }
 
     .content-box {
@@ -910,3 +914,8 @@ export default {
         z-index: 9999;
     }
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/IndexPage.vue

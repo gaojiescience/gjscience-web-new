@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="input-holder">
-        <input placeholder="请输入密码" v-model="password" v-on:input="listenPasswordChange" type="password">
+        <input placeholder="请输入密码" v-model="password" v-on:input="listenPasswordChange" v-on:keydown.enter="sendLoginInfo" type="password">
       </div>
       <div class="tips" v-if="isShowPasswordTips">
         {{ passwordTips }}
@@ -67,7 +67,16 @@
       <div class="full-btn" v-on:click="sendLoginInfo" v-if="isBanSendBtn">
         登 录 中
       </div>
+      <div class="login-help-holder">
+        <a class="login-help-btn" href="/#/change">
+          忘记密码？
+        </a>
+        <a class="login-help-btn" href="/#/register">
+          立即注册
+        </a>
+      </div>
     </div>
+
     <Footer></Footer>
   </div>
 </template>
@@ -115,7 +124,7 @@ export default {
       }
     },
     listenEmailChange: function () {
-
+      window.console.log(this.email)
       if (this.email.length == 0) {
         this.isShowSendBtn = false;
         this.isShowEmailTips = true;
@@ -140,10 +149,11 @@ export default {
     sendLoginInfo: function () {
       const that = this;
       const data = this.qs.stringify({
-        "email": this.email,
+        "code": this.email,
         "type": "email",
         "password": this.password
       });
+      window.console.log(data)
       this.isBanSendBtn = true;
       this.$axios.post("/api/login", data).then(function (res) {
         window.console.log(res);
@@ -151,16 +161,14 @@ export default {
         if (res[0] === 200) {
           that.isShowPasswordTips = false;
           that.passwordTips = "";
-          that.$cookie.set('token', res[2], 1);
-          that.$cookie.set('isLogin', 1, 1);
-          that.$cookie.set('userCode', res[1].user_code, 1);
-          that.$cookie.set('userNick', res[1].nickname_str, 1);
-          that.$cookie.set('userAvatar', res[1].avatar_str ? res[1].avatar_str : that.defaultAvatar, 1);
+          that.$cookie.set('token', res[2], 7);
+          that.$cookie.set('isLogin', 1, 7);
+          that.$cookie.set('userCode', res[1].user_code, 7);
+          that.$cookie.set('userNick', res[1].nickname_str, 7);
+          that.$cookie.set('userAvatar', res[1].avatar_str ? res[1].avatar_str : that.defaultAvatar, 7);
+          const preRoute = localStorage.getItem("preRoute").replace(/\"/g, "");
 
-          const newPage = that.$router.resolve({
-            name: "MarketPage",
-          });
-          window.open(newPage.href,'_self')
+          that.$router.push({ path: preRoute });
         }
         else {
           that.isShowPasswordTips = true;
@@ -170,8 +178,11 @@ export default {
       })
     },
   },
-  mounted() {
-
+    mounted() {
+      const userEmail = localStorage.getItem("userEmail");
+      if (userEmail.length != 0) {
+        this.email = userEmail.replace(/\"/g, "");
+      }
   },
 }
 </script>
@@ -383,6 +394,23 @@ export default {
     border: 1px solid #af710e;
   }
 
+  .login-help-holder {
+    width: 100%;
+    height: 30px;
+    /*background-color: red;*/
+    display: flex;
+    justify-content: flex-end;
+    line-height: 30px;
+    font-size: 95%;
+  }
 
+  .login-help-btn {
+    text-decoration: none;
+  }
 
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/Login.vue

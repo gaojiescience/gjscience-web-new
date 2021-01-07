@@ -1,6 +1,5 @@
 <template>
-  <!--<div class="root" v-wechat-title="title">-->
-  <div class="root">
+  <div class="root" v-wechat-title="title">
     <TopNavbar></TopNavbar>
     <!--<div class="page-holder">-->
     <!--</div>-->
@@ -36,22 +35,28 @@ export default {
     return {
       id: this.$route.params.id,
 //      title: this.$route.params.title,
-      result: ""
+      result: "",
+      title: ""
     }
   },
   methods: {
     getNewsData: function () {
       const that = this;
-      const targetUrl = "/news/highlight/detail?id=" + this.id;
+      const targetUrl = "https://www.laohu8.com/proxy/news/highlight/detail?id=" + this.id;
       this.$axios.get(targetUrl, {}).then(function (res) {
-        window.console.log(res);
+//        window.console.log(res);
         that.result = res.data;
         let targetElement = document.getElementsByClassName("content-holder")[0];
         targetElement.innerHTML = that.result;
+//        window.console.log(document.getElementsByClassName('title'))
+//        window.console.log(res)
+
+//        window.console.log(that.title);
         document.getElementsByClassName("title")[0].style.cssText="color: black;";
         document.getElementsByClassName("h-name small")[0].style.cssText="color: black; font-size: 90%;";
         document.getElementsByClassName("search-img")[0].style.cssText="margin: 0 0;";
         document.getElementsByClassName("icon-img")[0].style.cssText="display: default; margin-top: 12px;";
+        that.title = document.getElementsByClassName('title')[0].innerText;
 //        that.newsData = res.data;
 //        let date = new Date(res.data.news_info.publish_time*1000);
 //        window.console.log(date);
@@ -92,3 +97,8 @@ export default {
     padding-bottom: 8vh;
   }
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/News.vue

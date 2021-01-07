@@ -10,6 +10,15 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+      "/gu": {
+        target: "https://qt.gtimg.cn/",
+        ws: true,
+        changeOrigin: true,
+        secure: true,
+        pathRewrite: {
+          "^/gu": "https://qt.gtimg.cn/"
+        }
+      },
       "/api": {
           target: "http://localhost:8000",
           // target: "58.250.250.99:8000",
@@ -20,8 +29,8 @@ module.exports = {
           }
       },
       "/community": {
-        target: "http://localhost:8000/community",
-        // target: "58.250.250.99:8000/community",
+        // target: "http://localhost:8000/community",
+        target: "58.250.250.99:8000/community",
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -36,7 +45,8 @@ module.exports = {
         pathRewrite: {
           "^/news": ""
         }
-      }
+      },
+
     },
     pwa : {
       iconPaths: {
@@ -81,7 +91,45 @@ module.exports = {
   build: {
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
+    proxyTable: {
+      "/sina/*": {
+        target: "https://hq.sinajs.cn/etag.php",
+        ws: true,
+        changeOrigin: true,
+        secure: true,
+        pathRewrite: {
+          "/sina": "https://hq.sinajs.cn/etag.php"
+        }
+      },
+      "/api": {
+          target: "http://localhost:8000",
+          // target: "58.250.250.99:8000",
+          ws: true,
+          changeOrigin: true,
+          pathRewrite: {
+              "^/api": ""
+          }
+      },
+      "/community": {
+        // target: "http://localhost:8000/community",
+        target: "58.250.250.99:8000/community",
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          "^/community": ""
+        }
+      },
+      "/news": {
+        target: "https://stock-news.itiger.com",
+        // target: "58.250.250.99:8000/community",
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          "^/news": ""
+        }
+      },
 
+    },
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',

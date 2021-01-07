@@ -246,7 +246,7 @@
             <swiper class="swiper-holder" ref="mySwiper" :options="swiperOptions">
               <swiper-slide class="swiper-box" v-for="(item, index) in newsSwiperList" v-bind:key="index">
                 <a class="swiper-box">
-                  <img :src="item.img">
+                  <img :src="item.thumbnail" v-on:click="jumpToNews(item.id)">
                   <p>{{ item.title }}</p>
                 </a>
               </swiper-slide>
@@ -280,18 +280,18 @@
               <!--&lt;!&ndash;</div>&ndash;&gt;-->
             <!--</div>-->
             </div>
-            <div class="news-list" v-for="(item, index) in newsList" v-bind:key="index">
-              <div class="news-line">
+            <div class="news-list">
+              <div class="news-line" v-for="(item, index) in newsList" v-bind:key="index" v-on:click="jumpToNews(item.id)">
                 <a>{{ item.title }}</a>
               </div>
             </div>
           </div>
 
-          <div class="content-box">
-            <div class="box-header">
-              <div class="header-title">
-                <h2>研究</h2>
-              </div>
+          <!--<div class="content-box">-->
+            <!--<div class="box-header">-->
+              <!--<div class="header-title">-->
+                <!--<h2>研究</h2>-->
+              <!--</div>-->
 
             <!--<div class="header-btn">-->
               <!--<div :class="(nowChosenTips == 'new' ? 'background-gray' : '')" @click="getTipsData('new')">-->
@@ -301,13 +301,13 @@
                 <!--&lt;!&ndash;停盘提示&ndash;&gt;-->
               <!--&lt;!&ndash;</div>&ndash;&gt;-->
             <!--</div>-->
-            </div>
-            <div class="news-list" v-for="(item, index) in researchList" v-bind:key="index">
-              <div class="news-line">
-                <a>{{ item.title }}</a>
-              </div>
-            </div>
-          </div>
+            <!--</div>-->
+            <!--<div class="news-list" v-for="(item, index) in researchList" v-bind:key="index">-->
+              <!--<div class="news-line">-->
+                <!--<a>{{ item.title }}</a>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
         </div>
       </div>
     </div>
@@ -434,21 +434,30 @@ export default {
       });
       window.open(newPage.href,'_blank')
     },
-    getResearchData: function () {
-      const that = this;
-      const targetUrl = "/api/current";
-      this.$axios.get(targetUrl, {}).then(function (res){
-        that.researchList = res.data;
-      })
+    jumpToNews: function (id) {
+      const newPage = this.$router.resolve({
+        name: "News",
+        params: {
+          id: id,
+        }
+      });
+      window.open(newPage.href,'_blank')
     },
+//    getResearchData: function () {
+//      const that = this;
+//      const targetUrl = "/api/current";
+//      this.$axios.get(targetUrl, {}).then(function (res){
+//        that.researchList = res.data;
+//      })
+//    },
     getNewsData: function () {
       const that = this;
-      const targetUrl = "/api/news";
+      const targetUrl = "https://www.laohu8.com/proxy/news/highlight/list?pageCount=1";
 
       this.$axios.get(targetUrl, {}).then(function (res){
-        that.newsSwiperList = res.data.slice(0, 3);
-        that.newsList = res.data.slice(3, 10);
-//        window.console.log(that.newsSwiperList);
+        that.newsSwiperList = res.data.items.slice(0, 3);
+        that.newsList = res.data.items.slice(3, 15);
+//        window.console.log(that.newsList);
       })
     },
     getTipsData: function (type) {
@@ -494,10 +503,10 @@ export default {
       this.getTimeLineUrl();
     },
     changeMarket: function (event) {
-      window.console.log(event.path[1])
+//      window.console.log(event.path[1])
       this.nowChosenMarket = event.path[1].id;
       this.getMarketIndexList(this.nowChosenMarket);
-      window.console.log(this.indexList);
+//      window.console.log(this.indexList);
       this.nowChosenIndex = Object.keys(this.indexDict[this.nowChosenMarket])[0];
       this.getTimeLineUrl();
     },
@@ -651,7 +660,7 @@ export default {
     this.getTipsData("new");
     this.swiper.slideTo(3, 1000, false);
     this.getNewsData();
-    this.getResearchData();
+//    this.getResearchData();
   },
 }
 </script>
@@ -902,14 +911,15 @@ export default {
     z-index: 3;
     display: inline-block;
     position: relative;
-    top: -240px;
+    top: -120px;
     width: 90%;
     text-align: left;
+    /*background-color: white;*/
   }
 
   .swiper-box img {
     z-index: 1;
-
+    width: 100%;
   }
 
   .news-list {
@@ -1002,3 +1012,8 @@ export default {
 
 
   </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/MarketPage.vue

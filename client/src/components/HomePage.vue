@@ -500,3 +500,8 @@ export default {
     background-color: #b5d7e0 !important;
   }
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/HomePage.vue

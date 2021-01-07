@@ -23,18 +23,18 @@
     <div class="toolbar">
       <div class="left-bar">
         <div class="tool-btn">
-          <img src="../assets/face.png" v-on:click="showEmojiDropDown">
+          <img src="../assets/face.png" v-on:click="showEmojiDropDown" id="emojiButton">
           <div class="emoji-dropdown" v-if="isShowEmojiDropDown">
             <div v-for="(item, index) in emojiList" v-bind:key="index" v-html="item" class="emoji-box" v-on:click="insertEmoji(item)">
 
             </div>
           </div>
         </div>
-        <div class="tool-btn" v-on:click="selectFile">
+        <div class="tool-btn" v-on:click="selectFile" id="fileButton">
           <img src="../assets/img.png">
           <input type="file" accept=".jpg,.png,.gif" @change="handleFileChange" ref="selectFile" multiple="multiple">
         </div>
-        <div class="tool-btn" v-on:click="inputStock">
+        <div class="tool-btn" v-on:click="inputStock" id="stockButton">
           <img src="../assets/stock.png">
         </div>
       </div>
@@ -99,7 +99,6 @@ export default {
       else {
         for (let nodeIndex in childNodes) {
           if ((cursor+childNodes[nodeIndex].textContent.length) < this.nowRange ) {
-            window.console.log(childNodes[nodeIndex].textContent);
             cursor += childNodes[nodeIndex].textContent.length;
           }
           else {
@@ -116,7 +115,6 @@ export default {
       this.$refs.selectFile.dispatchEvent(new MouseEvent('click'));
     },
     handleFileChange: function (event) {
-      window.console.log(event);
       const that = this;
       const ele = document.getElementsByClassName("text-area")[0];
 
@@ -148,14 +146,11 @@ export default {
       }
       else {
         let cursor = 0;
-        window.console.log(ele.innerHTML);
-        window.console.log(childNodes);
         let fileIndex = 0;
         fileReader.readAsDataURL(imgFiles[fileIndex]);
 
         fileReader.onload = function (res) {
           let imgNode = document.createElement("img");
-          window.console.log(childNodes);
           imgNode.setAttribute("src", fileReader.result);
           imgNode.classList.add("upload-img");
 //              ele.appendChild(imgNode);
@@ -217,11 +212,9 @@ export default {
       ele.focus();
       this.setRange(5);
       this.nowRange = this.getCurrentRange();
-      window.console.log(5)
     },
     setRangePosition: function () {
       this.nowRange = this.getCurrentRange();
-      window.console.log(this.nowRange);
     },
     listenMouseSelect: function (event) {
       const ele = document.getElementsByClassName("text-area")[0];
@@ -229,7 +222,6 @@ export default {
       this.newRange = (newRange*7.7 + ele.offsetLeft + 8);
       this.newHeight = Math.floor(this.newRange / ele.clientWidth) + 25 + ele.offsetTop;
       this.nowRange = this.getCurrentRange();
-      window.console.log(this.nowRange);
 //      const currentDom = range.endContainer.nextSibling;
 //      window.console.log(ele.innerText.split("$").length&1);
 
@@ -289,17 +281,17 @@ export default {
       const dataText = "$" + data.name + "(" + data.exchange_abbr.toUpperCase() + data.stock + ")$";
 //      let html = text.split("$");
       let html = text.replace("$"+this.searchInput, dataText);
-      window.console.log(data);
+
       html = html.replace(/\$(.+?)\$/g, "<a onselectstart='return false' href='/#/stock/" + data.exchange_abbr + "/" + data.stock + "/" + data.isIndex + "' style='text-decoration: none;' class='light-blue block' readonly='true'>\$ $1 \$</a>");
 //      window.console.log(html);
 //      html = text.replace(/\s+/g, " ");
 
       ele.innerHTML = html;
-      window.console.log(this.nowRange)
+
       this.nowRange += dataText.length + 5;
       ele.focus();
       this.setRange(5);
-      window.console.log(this.nowRange)
+
 
 
 //      this.setRange(range);
@@ -311,7 +303,7 @@ export default {
 //      window.console.log(ele.childNodes[0].childNodes);
       let cursor = 0;
       let parent = ele.childNodes;
-      window.console.log(parent);
+
       if (parent.length === 0) {
         let emojiEle = document.createElement("span");
         emojiEle.innerHTML = emoji;
@@ -321,7 +313,7 @@ export default {
         for (let child in parent) {
 
           if ((cursor+parent[child].textContent.length) < this.nowRange ) {
-            window.console.log(parent[child].textContent);
+
             cursor += parent[child].textContent.length;
           }
           else {
@@ -330,7 +322,7 @@ export default {
             emojiEle.innerHTML = parent[child].textContent.slice(0, this.nowRange-cursor) + emoji + parent[child].textContent.slice(this.nowRange-cursor, parent[child].textContent.length);
             ele.removeChild(parent[child]);
             ele.insertBefore(emojiEle, parent[child+1]);
-            window.console.log(ele.childNodes);
+
             break
           }
 
@@ -386,14 +378,29 @@ export default {
       const targetUrl = "/api/searchAssociation?input=" + this.searchInput;
 //      window.console.log(this.searchInput);
       this.$axios.get(targetUrl, {}).then(function (res){
-        window.console.log(res);
+
         that.showChoices = true;
         that.searchAssociation = res.data;
       })
     },
   },
   mounted() {
-
+    // document.addEventListener('click', (e)=> {
+    //   window.console.log(2)
+    //   if (e.target.id != 'emojiButton') {
+    //     this.isShowEmojiDropDown = false;
+    //   }
+    //
+    //   if (e.target.id != 'stockButton') {
+    //     this.isShowSearchBox = false;
+    //   }
+    // })
+    // document.addEventListener('click', (e)=> {
+    //   window.console.log(6)
+    //   if (e.target.id != 'information') {
+    //     this.isClickInformation= false;
+    //   }
+    // })
   }
 }
 </script>

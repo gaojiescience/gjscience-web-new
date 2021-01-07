@@ -8,6 +8,8 @@ import IndexPage from '@/components/IndexPage'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
 import News from '@/components/News'
+import UserProfile from '@/components/UserProfile'
+import ChangePassWord from '@/components/ChangePassWord'
 
 Vue.use(Router);
 
@@ -62,9 +64,26 @@ export default new Router({
       }
     },
     {
+      path: '/change',
+      name: 'Change',
+      component: ChangePassWord,
+      meta: {
+        title: "高街科技-修改密码"
+      }
+    },
+    {
+      path: '/userprofile',
+      name: 'UserProfile',
+      component: UserProfile,
+      meta: {
+        title: "高街科技-个人中心"
+      }
+    },
+    {
       path: '/news/:id/',
       name: 'News',
       component: News,
     },
+
   ]
 })

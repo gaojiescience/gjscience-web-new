@@ -1,6 +1,6 @@
 <template>
   <div class="content-holder">
-    <StockCommentsEditor v-bind:stock="stock" v-bind:name="name" v-bind:exchange="exchange" v-bind:isIndex="isIndex" style="z-index: 999"></StockCommentsEditor>
+    <StockCommentsEditor v-bind:stock="stock" v-bind:name="name" v-bind:exchange="exchange" v-bind:isIndex="isIndex" style="z-index: 999" @updateCommentsData="getStockComments"></StockCommentsEditor>
     <!--<img :src="avatar"/>-->
     <div class="header-bar">
       <div :class="'header-button ' + (selectedBlock === 'news' ? 'selected' : '')" v-on:click="selectBlock('news')">
@@ -27,6 +27,9 @@
               {{ item.media }} {{ item.pubTime.split(' ')[1] }}
             </div>
           </div>
+        </div>
+        <div class="content-footer" v-on:click="newsPage+=1;getStockNews()">
+          加载更多
         </div>
       </div>
 
@@ -129,12 +132,13 @@ export default {
       commentsPage: 1,
       commentsData: [],
       htmlDict: [],
-      commentsDetailList: []
+      commentsDetailList: [],
+      scrollTop: 0,
     }
   },
   methods: {
     selectBlock: function (e) {
-      window.console.log(e);
+//      window.console.log(e);
       this.selectedBlock = e;
       if (e === "news") {
         this.getStockNews()
@@ -150,24 +154,28 @@ export default {
       const that = this;
       const targetUrl = "https://www.laohu8.com/proxy/news/news/list?symbols=" + this.stock + "&pageCount=" + this.newsPage;
       this.$axios.get(targetUrl, {}).then(function (res) {
-        window.console.log(res);
-        that.newsList = res.data.items;
+        for (let index in res.data.items) {
+          that.newsList.push(res.data.items[index]);
+        }
+
+//        that.$forceUpdate();
+//        window.console.log(that.newsList);
       })
     },
     getStockNotice: function () {
       const that = this;
       const targetUrl = "https://www.laohu8.com/proxy/news/notice/list?symbols=" + this.stock;
       this.$axios.get(targetUrl, {}).then(function (res) {
-        window.console.log(res);
+//        window.console.log(res);
         that.noticeList = res.data.items;
       })
     },
     getStockComments: function () {
       const that = this;
       const targetUrl = "/api/comments?type=" + this.commentsType + "&stock=" + this.stock + "&page=" + this.commentsPage;
-      window.console.log(this.commentsPage);
+//      window.console.log(this.commentsPage);
       this.$axios.get(targetUrl, {}).then(function (res) {
-        window.console.log(res.data);
+//        window.console.log(res.data);
         that.commentsData = res.data;
         for (let index in res.data) {
           that.getCommentHtml(that, res.data[index].fields.comment_code, res.data[index].fields.content_html,)
@@ -178,7 +186,7 @@ export default {
     getCommentHtml: function (that, code, path) {
       const that_ = that;
       that.$axios.get("/api/"+path, {}).then(function (res) {
-        window.console.log(res)
+//        window.console.log(res);
         that_.htmlDict[code] = res.data;
         that.$forceUpdate();
 //        that.userName = res.data;
@@ -191,7 +199,7 @@ export default {
 //      "http://gu.qq.com/resources/shy/news/detail-v2/index.html#/?id=nesSN202008041444237a98e68a&s=b"
 //      https://snp.tenpay.com/cgi-bin/snpgw_unified_newsinfo.fcgi?&filter=0&news_id=SN202008041444237a98e68a&zappid=zxg_h5&sign=0fc7a79b0ac20c7376b2a7a7c60bc6c0&nonce=536&reserve=1572995&&channel=zxg&user_openid=undefined&user_skey=undefined
       const targetData = this.newsList[index];
-      window.console.log(targetData);
+//      window.console.log(targetData);
       const id = targetData.id;
       const newPage = this.$router.resolve({
         name: "News",
@@ -203,22 +211,35 @@ export default {
     },
     showCommentsDetail: function (index) {
       let targetElement = document.getElementsByClassName("comments-line")[index];
-      window.console.log(targetElement.childNodes[2]);
+//      window.console.log(targetElement.childNodes[2]);
       targetElement.childNodes[2].style.cssText="transition: height 1s; height: auto !important;";
-      window.console.log(targetElement);
+//      window.console.log(targetElement);
       this.commentsDetailList.push(index)
     },
     hideCommentsDetail: function (index) {
       let targetElement = document.getElementsByClassName("comments-line")[index];
       targetElement.childNodes[2].style.cssText="transition: height 1s; height: 63px !important;";
-      window.console.log(this.commentsDetailList)
+//      window.console.log(this.commentsDetailList);
       this.commentsDetailList.splice(this.commentsDetailList.indexOf(index), 1);
-      window.console.log(this.commentsDetailList)
-      window.console.log(this.commentsDetailList.indexOf(index))
+//      window.console.log(this.commentsDetailList);
+//      window.console.log(this.commentsDetailList.indexOf(index))
+    },
+    scrollListener: function () {
+      this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      let windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
+      let scrollHeight = document.documentElement.scrollHeight||document.body.scrollHeight;
+//      window.console.log(windowHeight+this.scrollTop);
+//      window.console.log(scrollHeight);
+//      window.console.log(windowHeight+this.scrollTop/scrollHeight);
+      if ((windowHeight+this.scrollTop) === scrollHeight && this.newsPage < 5) {
+        this.newsPage += 1;
+        this.getStockNews()
+      }
     }
   },
   mounted() {
     this.getStockNews();
+    window.addEventListener('scroll', this.scrollListener, true);
   }
 }
 </script>
@@ -497,4 +518,20 @@ export default {
     height: auto;
   }
 
+  .content-footer {
+    width: 70%;
+    height: 50px;
+    background-color: white;
+    border: 1px solid #ebecf1;
+    margin-left: 15%;
+    margin-top: 80px;
+    cursor: pointer;
+    line-height: 50px;
+  }
+
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/Comments.vue

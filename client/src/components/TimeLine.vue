@@ -31,7 +31,7 @@ export default {
 
   methods: {
     getDateData: function () {
-//      window.console.log(this.fullStock);
+
       const market = this.fullStock.split("-")[0];
       const startTimeStamp = new Date();
 
@@ -49,22 +49,26 @@ export default {
       startTimeStamp.setMinutes(marketToTimestamp[market][1]);
       startTimeStamp.setSeconds(marketToTimestamp[market][2]);
       startTimeStamp.setMilliseconds(marketToTimestamp[market][3]);
-//      window.console.log(startTimeStamp);
-      let dateList = [startTimeStamp.toLocaleString().split("午")[1].split(":00")[0]];
+     // window.console.log(startTimeStamp);
+      // let dateList = [startTimeStamp.toLocaleString().split("午")[1].split(":00")[0]];
+      let dateList = [startTimeStamp.getHours() + ":" + startTimeStamp.getMinutes()];
+      // window.console.log(dateList)
+      // window.console.log(dateList2)
+      // window.console.log(startTimeStamp.toLocaleString())
       for (let index in [...new Array(marketToTimestamp[market][4])]) {
 //        window.console.log(index);
         startTimeStamp.setMinutes(startTimeStamp.getMinutes() + 1);
-        dateList.push(startTimeStamp.toLocaleString().split("午")[1].split(":00")[0])
+        dateList.push(startTimeStamp.getHours() + ":" + startTimeStamp.getMinutes())
       }
 
       startTimeStamp.setHours(marketToTimestamp[market][5]);
       startTimeStamp.setMinutes(marketToTimestamp[market][6]);
       startTimeStamp.setSeconds(marketToTimestamp[market][7]);
-      dateList.push(startTimeStamp.toLocaleString().split("午")[1].split(":00")[0]);
+      dateList.push(startTimeStamp.getHours() + ":" + startTimeStamp.getMinutes());
       for (let index in [...new Array(marketToTimestamp[market][9])]) {
 //        window.console.log(index);
         startTimeStamp.setMinutes(startTimeStamp.getMinutes() + 1);
-        dateList.push(startTimeStamp.toLocaleString().split("午")[1].split(":00")[0])
+        dateList.push(startTimeStamp.getHours() + ":" + startTimeStamp.getMinutes())
       }
 
       this.timeLineDateData = dateList;
@@ -95,7 +99,6 @@ export default {
       let stockUrl = urlDict[this.fullStock.split("-")[0]];
       let indexUrl = urlDict[this.fullStock.split("-")[0]+"zs"];
       const targetUrl = this.isIndex == "ZS" && this.fullStock.split("-")[0] == "us" ? indexUrl : stockUrl;
-      window.console.log(urlDict[targetUrl]);
 //      const targetUrl =
 //      try{
         this.$axios.get(targetUrl, {}).then(function (res) {
@@ -596,3 +599,8 @@ export default {
     color:#E24528;
   }
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/TimeLine.vue

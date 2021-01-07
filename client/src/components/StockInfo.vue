@@ -280,7 +280,6 @@ export default {
       window.open(url,'_blank')
     },
     showOrHideBlock: function (event) {
-      window.console.log(event);
       if (this.showBlockList.indexOf(event) == -1) {
         this.showBlockList.push(event)
       }
@@ -355,3 +354,8 @@ export default {
     color: #a6a9b6;
   }
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/StockInfo.vue

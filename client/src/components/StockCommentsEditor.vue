@@ -94,7 +94,7 @@ export default {
     watchKeyboardInput: function (e) {
       const inputContent = e.data;
       const topElement = document.getElementsByClassName("text-area")[0];
-      window.console.log(e);
+//      window.console.log(e);
       if (inputContent === null) {
 //        window.console.log(topElement);
         if (topElement.childNodes.length === 0) {
@@ -149,15 +149,15 @@ export default {
       const targetUrl = "/api/searchAssociation?input=" + this.searchInput;
 //      window.console.log(this.searchInput);
       this.$axios.get(targetUrl, {}).then(function (res){
-        window.console.log(res);
+//        window.console.log(res);
         that.showChoices = true;
         that.searchAssociation = res.data;
       })
-      window.console.log(e);
+//      window.console.log(e);
     },
     choseStock: function (index) {
       let topElement = document.getElementsByClassName("text-area")[0];
-      window.console.log(this.searchAssociation[index]);
+//      window.console.log(this.searchAssociation[index]);
       let searchAssociation = this.searchAssociation;
       let stockHref = '/#/stock/' + searchAssociation[index]["exchange_abbr"] + '/' + searchAssociation[index]["stock"] + '/' + searchAssociation[index]["isIndex"];
       let stockText = "$" + searchAssociation[index]["name"] + "(" + searchAssociation[index]["exchange_abbr"].toUpperCase() + searchAssociation[index]["stock"] + ")$";
@@ -172,7 +172,7 @@ export default {
 //      topElement.focus();
       let selection = document.getSelection();
       let range = selection.getRangeAt(0);
-      window.console.log(selection);
+//      window.console.log(selection);
       this.nowSelection = selection;
       this.nowRange = range;
     },
@@ -194,7 +194,7 @@ export default {
       this.$refs.selectFile.dispatchEvent(new MouseEvent('click'));
     },
     handleFileChange: function (event) {
-      window.console.log(event);
+//      window.console.log(event);
       const that = this;
       let imgFiles = [];
       const fileReader = new FileReader();
@@ -203,7 +203,7 @@ export default {
           imgFiles.push(event.path[0].files[fileIndex])
         }
       }
-      window.console.log(imgFiles)
+//      window.console.log(imgFiles)
       let fileIndex = 0;
       fileReader.readAsDataURL(imgFiles[fileIndex]);
       fileReader.onload = function (res) {
@@ -234,19 +234,20 @@ export default {
         "stock": this.stock,
         "content": this.commentsHtml,
       });
-      window.console.log(data);
+//      window.console.log(data);
       this.$axios.post("/api/comments", data).then(function (res) {
-        window.console.log(res);
+//        window.console.log(res);
         if (res.status === 200) {
           that.commentsHtml = "";
-          document.getElementsByClassName("text-area")[0].innerText = ""
+          document.getElementsByClassName("text-area")[0].innerText = "";
+          that.$emit("updateCommentsData");
         }
       });
     }
   },
   mounted() {
     this.isLogin = this.$cookie.get("isLogin");
-    window.console.log(this.isLogin)
+//    window.console.log(this.isLogin)
   }
 }
 </script>
@@ -471,3 +472,8 @@ export default {
   }
 
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/StockCommentsEditor.vue

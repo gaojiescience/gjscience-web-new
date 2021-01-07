@@ -70,7 +70,8 @@
 </template>
 
 <script>
-import Footer from "./Footer.vue"
+  import Footer from "./Footer.vue"
+  import { throttle } from "../tools.js"
 export default {
   name: 'Register',
   components: {
@@ -171,7 +172,7 @@ export default {
 
       this.changeProgress();
     },
-    sendRegisterInfo: function () {
+    sendRegisterInfo: throttle(function () {
       const that = this;
       this.listenEmailChange();
       this.listenPasswordChange();
@@ -188,15 +189,16 @@ export default {
         window.console.log(data);
         this.$axios.post("/api/register", data).then(function (res) {
           window.console.log(res);
-          if (res.status === 200) {
+          if (res.data[0] === 200) {
             let newPage = that.$router.resolve({
               name: "Login",
             });
-            window.open(newPage.href,'_self')
+            localStorage.setItem("userEmail", JSON.stringify(that.email))
+            window.open(newPage.href, '_self')
           }
         });
       }
-    },
+    }, 1000),
     isPasswordRepeat: function () {
       if (this.password === this.passwordRepeat) {
         this.isShowPasswordRepeatTips = false;
@@ -264,8 +266,8 @@ export default {
 
     },
 
-    requestVerificationCode: function () {
-
+    requestVerificationCode: throttle(function () {
+      const that = this;
       if (this.isShowSendBtn) {
         const data = this.qs.stringify({
           "email": this.email,
@@ -274,14 +276,23 @@ export default {
 
         this.$axios.post("/api/register", data).then(function (res) {
           window.console.log(res)
+          if (res.data[0] === 500) {
+            that.isShowEmailTips = true;
+            that.isShowSendBtn = false;
+            that.isBanSendBtn = false;
+            that.emailTips = "该邮箱已被使用！"
+          }
+          else if (res.data[0] === 200) {
+            that.isShowSendBtn = false;
+            that.isBanSendBtn = true;
+            that.changeProgress();
+            that.countdown();
+          }
         });
-        this.isShowSendBtn = false;
-        this.isBanSendBtn = true;
-        this.changeProgress();
-        this.countdown();
+        
       }
 
-    }
+    }, 1000)
   },
   mounted() {
     this.changeProgress();
@@ -551,3 +562,8 @@ export default {
 
 
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/Register.vue

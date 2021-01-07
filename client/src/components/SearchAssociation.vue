@@ -35,11 +35,9 @@ export default {
   },
   methods: {
     mouseInChoices: function (event) {
-      window.console.log(event);
       this.isMouseInChoices = true
     },
     mouseLeaveChoices: function (event) {
-      window.console.log(event);
       this.isMouseInChoices = false
     },
     choseStock: function (index) {
@@ -48,7 +46,6 @@ export default {
 //      this.$router.push({
 //
 //      })
-      window.console.log(this.searchAssociation[index]);
       const newPage = this.$router.resolve({
         name: "StockPage",
         params: {
@@ -62,9 +59,7 @@ export default {
     searchConnect: function() {
       const that = this;
       const targetUrl = "/api/searchAssociation?input=" + this.searchInput;
-      window.console.log(this.searchInput);
       this.$axios.get(targetUrl, {}).then(function (res){
-        window.console.log(res);
         that.showChoices = true;
         that.searchAssociation = res.data;
       })
@@ -162,3 +157,8 @@ export default {
     width: 140px;
   }
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/SearchAssociation.vue

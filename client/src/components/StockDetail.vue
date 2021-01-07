@@ -9,6 +9,7 @@
             <StockInfo v-bind:exchange="exchange" v-bind:stock="stock"></StockInfo>
           </div>
           <div class="center-left-right">
+
             <div class="center-header">
               <div class="center-header-left">
                 <div class="center-header-left-first">
@@ -45,6 +46,21 @@
                 <div class="data-box" v-for="(item, index) in stockDataList" v-bind:key="index">
                   {{ item }}
                 </div>
+              </div>
+            </div>
+
+            <div class="operation-bar">
+              <div class="operation-box" v-on:click="addToOperationalShares" v-if="!isAdded && isIndex !== 'ZS'">
+                +自选
+              </div>
+              <div class="" v-else-if="(!isAdded && isIndex === 'ZS' )">
+
+              </div>
+              <div class="" v-else-if="exchange==='us'">
+
+              </div>
+              <div class="operation-box added" v-else>
+                ✔已添加
               </div>
             </div>
 
@@ -90,8 +106,11 @@
           </div>
         </div>
         <div class="center-right">
+          <Radar v-bind:stock="stock"></Radar>
+          <OperationalShares ref="refresh" v-bind:stock="stock"></OperationalShares>
         </div>
       </div>
+      <Footer></Footer>
     <!--</div>-->
   </div>
 </template>
@@ -102,6 +121,9 @@ import TimeLine from "./TimeLine.vue"
 import KLine from "./KLine.vue"
 import StockInfo from "./StockInfo.vue"
 import Comments from "./Comments.vue"
+import Footer from "./Footer.vue"
+import Radar from "./Radar.vue"
+import OperationalShares from "./OperationalShares.vue"
 export default {
   name: 'SearchAssociation',
   components: {
@@ -110,7 +132,10 @@ export default {
     TimeLine,
     KLine,
     StockInfo,
-    Comments
+    Comments,
+    Footer,
+    Radar,
+    OperationalShares
   },
   data () {
     return {
@@ -138,9 +163,33 @@ export default {
       stockDataList: [],
       nowChosenType: "time",
       kLineKey: 1,
+      isAdded: false
     }
   },
   methods: {
+    changeAddButton: function (e) {
+      this.isAdded = e
+    },
+    addToOperationalShares: function () {
+      const that = this;
+      const userCode = this.$cookie.get("userCode");
+      if (this.exchange == "us" || this.exchange == "hk") {
+        alert("暂不支持美、港股自选，敬请期待！")
+        return 0
+      }
+
+      const data = this.qs.stringify({
+        "userCode": userCode,
+        "stockCode": this.stock,
+        "exchange": this.exchange,
+        "stockName": this.name
+      })
+      this.$axios.post("/api/optionalShares", data).then(function (res) {
+        if (res.data === 200) {
+          that.$refs.refresh.getOperationalShares();
+        }
+      });
+    },
     changeCanvas: function (type) {
       this.nowChosenType = type;
       this.kLineKey = (this.kLineKey == 1 ? 2 : 1);
@@ -297,7 +346,7 @@ export default {
   .center-right {
     width: 30%;
     min-width: 364px;
-    padding-top: 5vh;
+    /*padding-top: 5vh;*/
     padding-left: 1vw;
     box-sizing: border-box;
     /*background-color: pink;*/
@@ -324,7 +373,7 @@ export default {
 
   .center-header-left {
     width: 250px;
-    height: 200px;
+    height: 120px;
     background-color: white;
   }
 
@@ -430,7 +479,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    margin-top: 5vh;
+    /*margin-top: 5vh;*/
   }
 
   .left-box {
@@ -514,4 +563,38 @@ export default {
     /*!*opacity: 0.7;*!*/
     /*border-radius: 5px;*/
   /*}*/
+
+  .operation-bar {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: start;
+    /*background-color: #0084ff;*/
+    /*margin-top: 5vh;*/
+  }
+
+  .operation-box {
+    width: 70px;
+    height: 30px;
+    background-color: #0084ff;
+    line-height: 30px;
+    /*padding-left: 5px;*/
+    cursor: pointer;
+    /*font-weight: 600;*/
+    color: white;
+    text-align: center;
+    border-radius: 15px;
+    font-size: 95%;
+  }
+
+  .added {
+    width: 80px !important;
+    font-size: 90% !important;
+  }
+
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/StockDetail.vue

@@ -304,3 +304,8 @@
         display: -webkit-flex;
     }
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/Calendar.vue

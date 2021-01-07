@@ -26,9 +26,9 @@
             <!--用户守则-->
           <!--</a>-->
         </div>
-        <div class="footer-line-right">
+        <!--<div class="footer-line-right">
           Copyright 2019 高街科技(深圳)有限公司 版权所有 粤ICP备19073853号
-        </div>
+        </div>-->
       </div>
     </div>
   </div>
@@ -78,7 +78,9 @@ export default {
     height: 100%;
     display: flex;
     justify-content: flex-start;
-    margin-top: 40px;
+    padding-top: 40px;
+    box-sizing: border-box;
+    /*margin-top: 40px;*/
   }
 
   .footer-btn {
@@ -94,7 +96,7 @@ export default {
     width: 90%;
     height: 50px;
     text-align: left;
-    margin-top: -100px;
+    margin-top: -60px;
   }
 
   .footer-about-right {
@@ -102,8 +104,10 @@ export default {
     height: 100%;
     display: flex;
     /*justify-content: flex-end;*/
-    margin-top: 40px;
+    /*margin-top: 40px;*/
     flex-direction: column;
+    padding-top: 40px;
+    box-sizing: border-box;
   }
 
   .footer-btn-right {
@@ -113,3 +117,8 @@ export default {
     text-align: right;
   }
 </style>
+
+
+
+// WEBPACK FOOTER //
+// src/components/Footer.vue

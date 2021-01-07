@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.views.generic.base import TemplateView
-from .views import GuanChaZheNewsParser, TushareNewsParser, SearchAssociation, StockStatus, StockInfoFromSina, RegisterStatusManager, LoginStatusManager
-from .views import CommentsManager
+from .views import GuanChaZheNewsParser, TushareNewsParser, SearchAssociation, StockStatus, StockInfoFromSina, RegisterStatusManager, LoginStatusManager, FinancialDataManager, UserProfileUpdateManager
+from .views import CommentsManager, OptionalSharesManager, OptionalSharesGroupManager, OptionalSharesItemManager, OptionalSharesOprateCoverManager, StockIndustrySearchManager, StockDailyDataManager
+from .views import FakeWalletManager, TransactionManager, StockSearch, StockManager, TradeCalendarManager, StockMarketDataManager
 # from .views import Kline
 
 urlpatterns = [
@@ -29,5 +30,19 @@ urlpatterns = [
     url(r'register', RegisterStatusManager.as_view(), name="register"),
     url(r'login', LoginStatusManager.as_view(), name="login"),
     url(r'comments', CommentsManager.as_view(), name="comments"),
+    url(r'financial', FinancialDataManager.as_view(), name="financial"),
+    url(r'optionalSharesGroup', OptionalSharesGroupManager.as_view(), name="OptionalSharesGroup"),
+    url(r'optionalSharesItem', OptionalSharesItemManager.as_view(), name="optionalSharesItem"),
+    url(r'optionalShares', OptionalSharesManager.as_view(), name="optionalShares"),  
+    url(r'optionalSharesOprateCover', OptionalSharesOprateCoverManager.as_view(), name="optionalSharesOprateCover"),
+    url(r'stockIndustry', StockIndustrySearchManager.as_view(), name="stockIndustry"),
+    url(r'daily', StockDailyDataManager.as_view(), name="daily"),
+    url(r'userProfile', UserProfileUpdateManager.as_view(), name="userprofile"),
+    url(r'wallet', FakeWalletManager.as_view(), name="wallet"),
+    url(r'transaction', TransactionManager.as_view(), name="transaction"),
+    url(r'stockSearch', StockSearch.as_view(), name="stockSearch"),
+    url(r'stockManager', StockManager.as_view(), name="stockManager"),
+    url(r'tradeCalendar', TradeCalendarManager.as_view(), name="tradeCalendarManager"),
+    url(r'stockMarketData', StockMarketDataManager.as_view(), name="stockMarketDataManager"),
     # url(r'kline', Kline.as_view(), name='kline'),
 ]

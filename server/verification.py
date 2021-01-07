@@ -89,7 +89,7 @@ class TokenManager(object):
 
     def create(self, code):
         token = create_64_code()
-        self.cursor.set(code+"_token", token, ex=86400)
+        self.cursor.set(code+"_token", token, ex=604800)
         # self.cursor.set("lol", "lol")
         return 200
 
